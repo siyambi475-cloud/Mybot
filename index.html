@@ -46,6 +46,24 @@
     </div>
 
     <script>
+        // ===== EXPIRY SYSTEM WITH TELEGRAM BUTTON =====
+        const expiryDate = new Date("2026-01-30T20:30:59");
+        const nowCheck = new Date();
+        if (nowCheck > expiryDate) {
+            document.body.innerHTML = `
+                <div style="background:#000;color:#ff0000;display:flex;justify-content:center;align-items:center;height:100vh;font-family:Orbitron, sans-serif;flex-direction:column;text-align:center;gap:20px;">
+                    <h1 style="text-shadow:0 0 10px red;">ACCESS EXPIRED</h1>
+                    <p>Your VIP access has ended.</p>
+                    <button onclick="window.location.href='https://t.me/rifat_developer'" 
+                        style="padding:12px 25px;font-size:1em;border:2px solid #ff0000;background:none;color:#ff0000;border-radius:8px;cursor:pointer;box-shadow:0 0 10px red;">
+                        CONTACT ADMIN ON TELEGRAM
+                    </button>
+                </div>
+            `;
+            throw new Error("Expired");
+        }
+        // ===== END EXPIRY SYSTEM =====
+
         // Matrix Effect
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
@@ -102,34 +120,25 @@
                 const hours = now.getUTCHours();
                 const remaining = 60 - seconds;
 
-                // --- 90% SECURE LOGIC ---
-                // পিরিয়ড এবং সময়ের ওপর ভিত্তি করে প্রেডিকশন
                 if (remaining <= 59 && lastMinute !== minutes) {
                     const seed = (minutes + hours + (now.getUTCDate())) % 10;
                     let result = "";
-                    
-                    // অ্যাডভান্সড অ্যালগরিদম লজিক
                     if (seed % 2 === 0) {
                         result = (remaining % 3 === 0) ? "Small" : "Big";
                     } else {
                         result = (remaining % 2 === 0) ? "Big" : "Small";
                     }
-
                     const resElement = document.getElementById('randomWord');
                     resElement.textContent = result;
                     resElement.style.color = (result === "Big") ? "#ff0000" : "#00ff00";
                     lastMinute = minutes;
                 }
 
-                // পিরিয়ড নাম্বার ক্যালকুলেশন
                 const dateStr = now.getUTCFullYear() + String(now.getUTCMonth() + 1).padStart(2, '0') + String(now.getUTCDate()).padStart(2, '0');
                 const periodNumber = dateStr + '1000' + String(10001 + (hours * 60 + minutes));
                 document.getElementById('period1m').textContent = "PERIOD: " + periodNumber;
-
-                // টাইমার ফরম্যাট
                 document.getElementById('timer1m').textContent = `TIME: 00 : ${String(remaining).padStart(2, '0')}`;
-                
-                // লাস্ট ৫ সেকেন্ডে সতর্কতা
+
                 if(remaining <= 5) {
                     document.getElementById('randomWord').textContent = "LOCK";
                     document.getElementById('randomWord').style.color = "#ffff00";
@@ -137,13 +146,13 @@
             }, 1000);
         }
 
-        // Draggable Logic
         const box = document.getElementById('timerBox');
-        let isDragging = false, currentX, currentY, initialX, initialY;
+        let isDragging = false, initialX, initialY;
         box.addEventListener('mousedown', (e) => {
             if (e.target.id === 'closeButton') return;
             isDragging = true;
-            initialX = e.clientX - box.offsetLeft; initialY = e.clientY - box.offsetTop;
+            initialX = e.clientX - box.offsetLeft; 
+            initialY = e.clientY - box.offsetTop;
         });
         document.addEventListener('mousemove', (e) => {
             if (isDragging) {
